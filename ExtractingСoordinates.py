@@ -7,12 +7,12 @@ class ExtractingCoord:
     def __init__(self, agregat_n):
         self.agregat_n = agregat_n
 
+    def get_images(self):
+        images = {"Graf/Ag7.png": "Агрегат 7"}
+        image = cv2.imread(images[self.agregat_n], 1)
+        cv2.imshow('image', image)
 
 
-
-
-    def get_images(self, agregat):
-        images = {"Graf/Ag7.png"}
-
-s = test1.obj_interface.get_s()
-print(s)
+agregat_n = test1.obj_interface.get_s()
+s = ExtractingCoord(agregat_n)
+s.get_images()
