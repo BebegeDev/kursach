@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
-import cv2
+
 
 class interface:
 
-    def __init__(self):
-        self.root = tk.Tk()
+    def __init__(self, root):
+        self.s = None
+        self.root = root
 
         # Первый FRAME
         self.f1 = tk.Frame(self.root)
@@ -55,8 +56,14 @@ class interface:
         self.root.mainloop()
 
     def getcomboExample(self, event):
-        s = self.comboExample.get()
-        print(s)
+        self.s = self.comboExample.get()
+        print(self.s)
+
+    def get_s(self):
+        return self.s
 
 
-interface()
+root = tk.Tk()
+obj_interface = interface(root)
+root.mainloop()
+
