@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-
+import cv2
 
 class interface:
 
@@ -52,16 +52,11 @@ class interface:
         self.table.heading("N", text="Мощность, МВт")
         self.table.heading("ny", text="КПД, %")
         self.table.grid(column=0, row=3, columnspan=2, sticky='ew')
-
         self.root.mainloop()
 
     def getcomboExample(self, event):
         s = self.comboExample.get()
-
-
-class Recognition_of_coordinates:
-
-    pass
+        print(s)
 
 
 interface()
