@@ -1,7 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, filedialog
-import cv2
-import PIL.Image, PIL.ImageTk
+from tkinter import ttk
 from PIL import Image
 from PIL import ImageTk
 
@@ -13,7 +11,7 @@ class interface:
         self.path = None
         self.s = None
         self.a = None
-
+        option_list = ["Агрегат №8"]
         self.root = tk.Tk()
 
         # Первый FRAME
@@ -37,8 +35,11 @@ class interface:
         self.l2.grid(column=0, row=1, sticky='ew')
 
         # Button АГРЕГАТ
-        b1 = tk.Button(self.f1, text="Укажите файл с характеристикой", command=self.select_image)
-        b1.grid(column=0, row=0, sticky='ew', columnspan=3)
+        b1 = tk.Button(self.f1, text="Выбрать", command=self.select_image)
+        b1.grid(column=2, row=0, sticky='ew')
+
+        self.comboExample = ttk.Combobox(self.f1, values=option_list)
+        self.comboExample.grid(column=1, row=0, sticky='ew')
 
         # Button НАПОР
         b2 = tk.Button(self.f1, text="Задать напор")
@@ -58,30 +59,29 @@ class interface:
         return self.s
 
     def select_image(self):
-        self.path = filedialog.askopenfilename()
+        # self.path = filedialog.askopenfilename()
+        self.selection = self.comboExample.get()
+        path_Ag = {"Агрегат №8": "Graf/Ag8.png"}
+        image = Image.open(path_Ag[self.selection])
+        resize_image = image.resize((1200, 490))
+        image = ImageTk.PhotoImage(resize_image)
 
-        if self.path:
-            image = Image.open(self.path)
-            resize_image = image.resize((1200, 490))
-            image = ImageTk.PhotoImage(resize_image)
+        if self.panelA is None:
+            self.panelA = tk.Label(self.f2, image=image)
+            self.panelA.bind("<Button-1>", self.callback)
+            self.panelA.image = image
+            self.panelA.grid(column=1, row=0)
 
-            if self.panelA is None:
-                self.panelA = tk.Label(self.f2, image=image)
-                self.panelA.bind("<Button-1>", self.callback)
-                self.panelA.image = image
-                self.panelA.grid(column=1, row=0)
-
-            else:
-                self.panelA.configure(image=image)
-                self.panelA.image = image
-                self.panelA.bind("<Button-1>", self.callback)
+        else:
+            self.panelA.configure(image=image)
+            self.panelA.image = image
+            self.panelA.bind("<Button-1>", self.callback)
 
     def callback(self, event):
-        print(event.x * 129.19896, event.y / 8.45)
+        if self.selection == "Агрегат №8":
+            print(event.x, event.y)
 
 
-option_list = [
-    "Ag8.png"
-]
+
 
 obj_interface = interface()
