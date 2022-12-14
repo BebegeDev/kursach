@@ -10,17 +10,16 @@ class interface:
 
     def __init__(self):
         self.panelA = None
-        self.panelB = None
         self.path = None
         self.s = None
         self.a = None
-        self.b = None
 
         self.root = tk.Tk()
 
         # Первый FRAME
         self.f1 = tk.Frame(self.root)
         self.f1.grid(row=0, column=0)
+
         # Второй FRAME
         self.f2 = tk.Frame(self.root)
         self.f2.grid(row=0, column=1)
@@ -55,7 +54,6 @@ class interface:
 
         self.root.mainloop()
 
-
     def get_s(self):
         return self.s
 
@@ -63,25 +61,27 @@ class interface:
         self.path = filedialog.askopenfilename()
 
         if self.path:
-            image = cv2.imread(self.path)
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            image = Image.open(self.path)
+            resize_image = image.resize((1200, 490))
+            image = ImageTk.PhotoImage(resize_image)
 
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = Image.fromarray(image)
-
-            image = ImageTk.PhotoImage(image)
-
-
-            if self.a is None or self.b is None:
+            if self.panelA is None:
                 self.panelA = tk.Label(self.f2, image=image)
+                self.panelA.bind("<Button-1>", self.callback)
                 self.panelA.image = image
-                self.panelA.grid()
-
+                self.panelA.grid(column=1, row=0)
 
             else:
                 self.panelA.configure(image=image)
                 self.panelA.image = image
+                self.panelA.bind("<Button-1>", self.callback)
+
+    def callback(self, event):
+        print(event.x * 129.19896, event.y / 8.45)
 
 
+option_list = [
+    "Ag8.png"
+]
 
 obj_interface = interface()

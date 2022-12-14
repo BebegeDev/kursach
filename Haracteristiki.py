@@ -65,5 +65,7 @@ def main():
     ag_aprox = Approximation(N, ny, dN, flag)
     ag_aprox.mapping_aproks(flag)
     TestTk.writer_d(ny, N, dN)
+
+
 if __name__ == '__main__':
     main()
