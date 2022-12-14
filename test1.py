@@ -79,9 +79,7 @@ class interface:
 
     def callback(self, event):
         if self.selection == "Агрегат №8":
-            print(event.x, event.y)
-
-
+            print(event.y)
 
 
 obj_interface = interface()
