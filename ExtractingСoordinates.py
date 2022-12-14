@@ -9,7 +9,7 @@ class ExtractingCoord:
 
     def get_images(self):
         images = {"Graf/Ag7.png": "Агрегат 7"}
-        image = cv2.imread(images[self.agregat_n], 1)
+        image = cv2.imread("Ag7.png", 1)
         cv2.imshow('image', image)
 
 
