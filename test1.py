@@ -21,6 +21,10 @@ class interface:
         self.f2 = tk.Frame(self.root)
         self.f2.grid(row=0, column=1)
 
+        # Третий FRAME
+        self.f3 = tk.Frame(self.root)
+        self.f3.grid(row=0, column=2)
+
         # Entry
         self.e = tk.Entry(self.f1)
         self.e.grid(column=1, row=1, sticky='ew')
@@ -32,14 +36,16 @@ class interface:
         # Label НАПОР
         self.l2 = tk.Label(self.f1, text="Введите напор H, м")
         self.l2.grid(column=0, row=1, sticky='ew')
+        # Label 3
+        self.l2 = tk.Label(self.f1, text="Укажите значение мощности и КПД ч-з , ")
+        self.l2.grid(column=0, row=2, sticky='ew', columnspan=3)
 
         # Button АГРЕГАТ
         b1 = tk.Button(self.f1, text="Выбрать", command=self.select_image)
         b1.grid(column=2, row=0, sticky='ew')
 
-        self.canvas = tk.Canvas(self.f2, height=490, width=1200)
+        self.canvas = tk.Canvas(self.f2, height=490, width=1100)
         self.canvas.grid(column=1, row=0)
-
 
         self.comboExample = ttk.Combobox(self.f1, values=option_list)
         self.comboExample.grid(column=1, row=0, sticky='ew')
@@ -49,12 +55,23 @@ class interface:
         b2.grid(column=2, row=1, sticky='ew')
 
 
-        # Table
-        columns = ['N', 'ny']
-        self.table = ttk.Treeview(self.f1, columns=columns, show='headings', height=20)
-        self.table.heading("N", text="Мощность, МВт")
-        self.table.heading("ny", text="КПД, %")
-        self.table.grid(column=0, row=3, columnspan=3, sticky='ew')
+        # # Table 1
+        # columns = ['N', 'ny']
+        # self.table = ttk.Treeview(self.f1, columns=columns, show='headings', height=21)
+        # self.table.heading("N", text="Мощность, МВт")
+        # self.table.heading("ny", text="КПД, %")
+        # self.table.grid(column=0, row=3, columnspan=3, sticky='ew')
+        for i in range(14):
+            self.e = tk.Entry(self.f1, width=15, fg='blue', font=('Arial', 16, 'bold'))
+
+            self.e.grid(row=i+3, column=0, sticky='ew', columnspan=3)
+
+        # Table 2
+        columns1 = ['N', 'ny']
+        self.table2 = ttk.Treeview(self.f3, columns=columns1, show='headings', height=25)
+        self.table2.heading("N", text="Мощность, МВт")
+        self.table2.heading("ny", text="КПД, %")
+        self.table2.grid(column=0, row=0, sticky='ew')
 
         self.root.mainloop()
 
@@ -66,7 +83,7 @@ class interface:
         self.selection = self.comboExample.get()
         path_Ag = {"Агрегат №8": "Graf/Ag8.png"}
         image = Image.open(path_Ag[self.selection])
-        resize_image = image.resize((1200, 490))
+        resize_image = image.resize((1100, 510))
         image = ImageTk.PhotoImage(resize_image)
 
         if self.panelA is None:
