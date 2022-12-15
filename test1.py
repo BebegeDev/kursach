@@ -7,6 +7,7 @@ from PIL import ImageTk
 class interface:
 
     def __init__(self):
+        self.H = None
         self.panelA = None
         self.path = None
         self.s = None
@@ -27,8 +28,8 @@ class interface:
         self.f3.grid(row=0, column=2)
 
         # Entry
-        self.e = tk.Entry(self.f1)
-        self.e.grid(column=1, row=1, sticky='ew')
+        self.e_H = tk.Entry(self.f1)
+        self.e_H.grid(column=1, row=1, sticky='ew')
 
         # Label 1 АГРЕГАТ
         self.l1 = tk.Label(self.f1, text="Выберите агрегат")
@@ -52,8 +53,8 @@ class interface:
         b1.grid(column=2, row=0, sticky='ew')
 
         # Button РАСЧЕТ
-        b1 = tk.Button(self.f1, text="Рассчитать")
-        b1.grid(column=0, row=17, sticky='ew', columnspan=3)
+        b2 = tk.Button(self.f1, text="Рассчитать")
+        b2.grid(column=0, row=17, sticky='ew', columnspan=3)
 
         self.canvas = tk.Canvas(self.f2, height=490, width=1100)
         self.canvas.grid(column=1, row=0)
@@ -62,15 +63,9 @@ class interface:
         self.comboExample.grid(column=1, row=0, sticky='ew')
 
         # Button НАПОР
-        b2 = tk.Button(self.f1, text="Задать напор")
-        b2.grid(column=2, row=1, sticky='ew')
+        b3 = tk.Button(self.f1, text="Задать напор", command=self.pressure)
+        b3.grid(column=2, row=1, sticky='ew')
 
-        # # Table 1
-        # columns = ['N', 'ny']
-        # self.table = ttk.Treeview(self.f1, columns=columns, show='headings', height=21)
-        # self.table.heading("N", text="Мощность, МВт")
-        # self.table.heading("ny", text="КПД, %")
-        # self.table.grid(column=0, row=3, columnspan=3, sticky='ew')
         self.list_e = []
         count_list_e = 0
         for i in range(3):
@@ -119,6 +114,12 @@ class interface:
             self.list_e[0].delete(0, 'end')
             self.list_e[0].insert(0, num)
 
+    def pressure(self):
+        try:
+            int(self.e_H.get())
+            self.H = self.e_H.get()
+        except ValueError:
+            messagebox.showerror("Ошибка", "Введите численное значение")
 
 
 obj_interface = interface()
