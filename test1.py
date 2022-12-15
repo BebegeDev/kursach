@@ -2,8 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image
 from PIL import ImageTk
-
-
+import math
 class interface:
 
     def __init__(self):
@@ -37,6 +36,10 @@ class interface:
         # Button АГРЕГАТ
         b1 = tk.Button(self.f1, text="Выбрать", command=self.select_image)
         b1.grid(column=2, row=0, sticky='ew')
+
+        self.canvas = tk.Canvas(self.f2, height=490, width=1200)
+        self.canvas.grid(column=1, row=0)
+
 
         self.comboExample = ttk.Combobox(self.f1, values=option_list)
         self.comboExample.grid(column=1, row=0, sticky='ew')
@@ -79,7 +82,12 @@ class interface:
 
     def callback(self, event):
         if self.selection == "Агрегат №8":
-            print(event.y)
+            print(event.x, event.y)
+            x = 72.0
+            x1 = 1158
+            y = event.y
+            if 75 < event.y < 437:
+                self.canvas.create_line(x, y, x1, y)
 
 
 obj_interface = interface()
