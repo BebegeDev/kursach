@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image
 from PIL import ImageTk
-import math
+
+
 class interface:
 
     def __init__(self):
@@ -36,13 +37,18 @@ class interface:
         # Label НАПОР
         self.l2 = tk.Label(self.f1, text="Введите напор H, м")
         self.l2.grid(column=0, row=1, sticky='ew')
+
         # Label 3
-        self.l2 = tk.Label(self.f1, text="Укажите значение мощности и КПД ч-з , ")
+        self.l2 = tk.Label(self.f1, text="Укажите значению мощности КПД через запятую")
         self.l2.grid(column=0, row=2, sticky='ew', columnspan=3)
 
         # Button АГРЕГАТ
         b1 = tk.Button(self.f1, text="Выбрать", command=self.select_image)
         b1.grid(column=2, row=0, sticky='ew')
+
+        # Button РАСЧЕТ
+        b1 = tk.Button(self.f1, text="Рассчитать")
+        b1.grid(column=0, row=17, sticky='ew', columnspan=3)
 
         self.canvas = tk.Canvas(self.f2, height=490, width=1100)
         self.canvas.grid(column=1, row=0)
@@ -54,17 +60,17 @@ class interface:
         b2 = tk.Button(self.f1, text="Задать напор")
         b2.grid(column=2, row=1, sticky='ew')
 
-
         # # Table 1
         # columns = ['N', 'ny']
         # self.table = ttk.Treeview(self.f1, columns=columns, show='headings', height=21)
         # self.table.heading("N", text="Мощность, МВт")
         # self.table.heading("ny", text="КПД, %")
         # self.table.grid(column=0, row=3, columnspan=3, sticky='ew')
-        for i in range(14):
-            self.e = tk.Entry(self.f1, width=15, fg='blue', font=('Arial', 16, 'bold'))
+        for i in range(3):
+            for j in range(13):
+                self.e = tk.Entry(self.f1, width=10, fg='blue', font=('Arial', 16, 'bold'))
 
-            self.e.grid(row=i+3, column=0, sticky='ew', columnspan=3)
+                self.e.grid(row=j + 3, column=i,)
 
         # Table 2
         columns1 = ['N', 'ny']
@@ -83,7 +89,7 @@ class interface:
         self.selection = self.comboExample.get()
         path_Ag = {"Агрегат №8": "Graf/Ag8.png"}
         image = Image.open(path_Ag[self.selection])
-        resize_image = image.resize((1100, 510))
+        resize_image = image.resize((1100, 519))
         image = ImageTk.PhotoImage(resize_image)
 
         if self.panelA is None:
