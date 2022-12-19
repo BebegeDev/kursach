@@ -21,58 +21,75 @@ class interface:
 
         # Второй FRAME
         self.f2 = tk.Frame(self.root)
-        self.f2.grid(row=0, column=1)
+        self.f2.grid(row=0, column=1, rowspan=2)
 
         # Третий FRAME
         self.f3 = tk.Frame(self.root)
-        self.f3.grid(row=0, column=2)
+        self.f3.grid(row=0, column=2, rowspan=2)
+
+        # Четвертый FRAME
+        self.f4 = tk.Frame(self.root)
+        self.f4.grid(row=2, columnspan=3, sticky='ew')
+
+        # Пятый FRAME
+        self.f5 = tk.Frame(self.root)
+        self.f5.grid(row=1, sticky='w')
+
+
 
         # Entry
         self.e_H = tk.Entry(self.f1)
-        self.e_H.grid(column=1, row=1, sticky='ew')
+        self.e_H.grid(column=1, row=1, sticky='ew', columnspan=2)
 
         # Label 1 АГРЕГАТ
         self.l1 = tk.Label(self.f1, text="Выберите агрегат")
-        self.l1.grid(column=0, row=0, sticky='ew')
+        self.l1.grid(column=0, row=0, sticky='w')
 
         # Label 2 НАПОР
         self.l2 = tk.Label(self.f1, text="Введите напор H, м")
-        self.l2.grid(column=0, row=1, sticky='ew')
+        self.l2.grid(column=0, row=1, sticky='w')
 
         # Label 3
-        self.l3 = tk.Label(self.f1, text="Укажите значению мощности КПД через запятую")
-        self.l3.grid(column=0, row=2, sticky='ew', columnspan=3)
+        self.l3 = tk.Label(self.f5, text="Укажите значения мощности соот-му КПД")
+        self.l3.grid(column=0, row=2, sticky='ew', columnspan=4)
 
         # Label 4
         self.l4 = tk.Label(self.f3, text="Рассчитанные значения")
         self.l4.grid(column=0, row=0, sticky='ew', columnspan=3)
 
-
         # Button АГРЕГАТ
         b1 = tk.Button(self.f1, text="Выбрать", command=self.select_image)
-        b1.grid(column=2, row=0, sticky='ew')
+        b1.grid(column=4, row=0, sticky='ew')
 
         # Button РАСЧЕТ
-        b2 = tk.Button(self.f1, text="Рассчитать")
-        b2.grid(column=0, row=17, sticky='ew', columnspan=3)
+        b2 = tk.Button(self.f5, text="Рассчитать")
+        b2.grid(column=0, row=17, sticky='ew', columnspan=4)
 
         self.canvas = tk.Canvas(self.f2, height=490, width=1100)
         self.canvas.grid(column=1, row=0)
 
+        self.canvas = tk.Canvas(self.f4, height=450, width=1920)
+        self.canvas.grid(column=0, row=0)
+
         self.comboExample = ttk.Combobox(self.f1, values=option_list)
-        self.comboExample.grid(column=1, row=0, sticky='ew')
+        self.comboExample.grid(column=1, row=0, sticky='w', columnspan=2)
 
         # Button НАПОР
         b3 = tk.Button(self.f1, text="Задать напор", command=self.pressure)
-        b3.grid(column=2, row=1, sticky='ew')
+        b3.grid(column=4, row=1, sticky='w')
 
         self.list_e = []
         count_list_e = 0
-        for i in range(3):
-            for j in range(13):
-                self.list_e.append(tk.Entry(self.f1, width=10, fg='blue', font=('Arial', 16, 'bold')))
-                self.list_e[count_list_e].grid(row=j + 3, column=i,)
+        c = 0
+        d = 1
+        for i in range(2):
+            for j in range(11 - i):
+                self.list_e.append(tk.Entry(self.f5, width=5, fg='blue', font=('Arial', 16, 'bold')))
+                self.list_e[count_list_e].grid(row=j + 3, column=i + d, sticky='ew')
+                tk.Label(self.f5, text=f"{70 + count_list_e}%", width=4).grid(column=i + c, row=3 + j, sticky='ew')
                 count_list_e += 1
+            c = 1
+            d = 2
 
         # Table 2
         columns1 = ['N', 'ny']
