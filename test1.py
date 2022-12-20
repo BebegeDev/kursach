@@ -3,10 +3,11 @@ from tkinter import ttk, messagebox
 from PIL import Image
 from PIL import ImageTk
 
-
 class interface:
 
     def __init__(self):
+        self.e = None
+        self.index_e = None
         self.H = None
         self.panelA = None
         self.path = None
@@ -33,13 +34,11 @@ class interface:
 
         # Пятый FRAME
         self.f5 = tk.Frame(self.root)
-        self.f5.grid(row=1, sticky='w')
-
-
+        self.f5.grid(row=1, sticky='ew',)
 
         # Entry
         self.e_H = tk.Entry(self.f1)
-        self.e_H.grid(column=1, row=1, sticky='ew', columnspan=2)
+        self.e_H.grid(column=1, row=1, sticky='ew',)
 
         # Label 1 АГРЕГАТ
         self.l1 = tk.Label(self.f1, text="Выберите агрегат")
@@ -72,24 +71,11 @@ class interface:
         self.canvas.grid(column=0, row=0)
 
         self.comboExample = ttk.Combobox(self.f1, values=option_list)
-        self.comboExample.grid(column=1, row=0, sticky='w', columnspan=2)
+        self.comboExample.grid(column=1, row=0, sticky='w')
 
         # Button НАПОР
         b3 = tk.Button(self.f1, text="Задать напор", command=self.pressure)
         b3.grid(column=4, row=1, sticky='w')
-
-        self.list_e = []
-        count_list_e = 0
-        c = 0
-        d = 1
-        for i in range(2):
-            for j in range(11 - i):
-                self.list_e.append(tk.Entry(self.f5, width=5, fg='blue', font=('Arial', 16, 'bold')))
-                self.list_e[count_list_e].grid(row=j + 3, column=i + d, sticky='ew')
-                tk.Label(self.f5, text=f"{70 + count_list_e}%", width=4).grid(column=i + c, row=3 + j, sticky='ew')
-                count_list_e += 1
-            c = 1
-            d = 2
 
         # Table 2
         columns1 = ['N', 'ny']
@@ -97,8 +83,23 @@ class interface:
         self.table2.heading("N", text="Мощность, МВт")
         self.table2.heading("ny", text="КПД, %")
         self.table2.grid(column=0, row=1, sticky='ew')
-
+        self.table_entry()
         self.root.mainloop()
+
+    def focus(self, event, e):
+
+            print(e)
+            print(e.focus_get)
+            e = str(e)[-2:]
+            if e == "ry":
+                e = 0
+            else:
+                e = [i for i in e if i.isdigit()]
+                if len(e) == 1:
+                    e = int(e[0]) - 1
+                else:
+                    e = int(e[0] + e[1]) - 1
+            self.e = e
 
     def get_s(self):
         return self.s
@@ -127,9 +128,27 @@ class interface:
 
     def callback(self, event):
         if self.selection == "Агрегат №8":
-            num = str(event.x * 118)
-            self.list_e[0].delete(0, 'end')
-            self.list_e[0].insert(0, num)
+            self.num = str(event.x * 118)
+            self.list_e[self.e].delete(0, 'end')
+            self.list_e[self.e].insert(0, self.num)
+
+    def table_entry(self):
+        self.list_e = []
+        count_list_e = 0
+        c = 0
+        d = 1
+        for i in range(2):
+            for j in range(11 - i):
+                self.list_e.append(tk.Entry(self.f5, width=10, fg='blue', font=('Arial', 16, 'bold')))
+                self.list_e[count_list_e].bind("<Button-1>",
+                                               lambda event, e=self.list_e[count_list_e], k=0: self.focus(event, e))
+                self.list_e[count_list_e].bind("<Tab>",
+                                               lambda event, e=self.list_e[count_list_e], k=1: self.focus(event, e))
+                self.list_e[count_list_e].grid(row=j + 3, column=i + d, sticky='ew')
+                tk.Label(self.f5, text=f"{70 + count_list_e}%", width=11).grid(column=i + c, row=3 + j,)
+                count_list_e += 1
+            c = 1
+            d = 2
 
     def pressure(self):
         try:
