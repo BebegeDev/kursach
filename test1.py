@@ -6,6 +6,7 @@ from PIL import ImageTk
 class interface:
 
     def __init__(self):
+        self.data = []
         self.e = None
         self.index_e = None
         self.H = None
@@ -61,7 +62,7 @@ class interface:
         b1.grid(column=4, row=0, sticky='ew')
 
         # Button РАСЧЕТ
-        b2 = tk.Button(self.f5, text="Рассчитать")
+        b2 = tk.Button(self.f5, text="Рассчитать", command=self.rr)
         b2.grid(column=0, row=17, sticky='ew', columnspan=4)
 
         self.canvas = tk.Canvas(self.f2, height=490, width=1100)
@@ -86,7 +87,7 @@ class interface:
         self.table_entry()
         self.root.mainloop()
 
-    def focus(self, event, e):
+    def focus(self, event, e, k):
 
             print(e)
             print(e.focus_get)
@@ -96,13 +97,10 @@ class interface:
             else:
                 e = [i for i in e if i.isdigit()]
                 if len(e) == 1:
-                    e = int(e[0]) - 1
+                    e = int(e[0]) - k
                 else:
-                    e = int(e[0] + e[1]) - 1
+                    e = int(e[0] + e[1]) - k
             self.e = e
-
-    def get_s(self):
-        return self.s
 
     def select_image(self):
         try:
@@ -129,8 +127,11 @@ class interface:
     def callback(self, event):
         if self.selection == "Агрегат №8":
             self.num = str(event.x * 118)
-            self.list_e[self.e].delete(0, 'end')
-            self.list_e[self.e].insert(0, self.num)
+            try:
+                self.list_e[self.e].delete(0, 'end')
+                self.list_e[self.e].insert(0, self.num)
+            except TypeError:
+                pass
 
     def table_entry(self):
         self.list_e = []
@@ -141,9 +142,7 @@ class interface:
             for j in range(11 - i):
                 self.list_e.append(tk.Entry(self.f5, width=10, fg='blue', font=('Arial', 16, 'bold')))
                 self.list_e[count_list_e].bind("<Button-1>",
-                                               lambda event, e=self.list_e[count_list_e], k=0: self.focus(event, e))
-                self.list_e[count_list_e].bind("<Tab>",
-                                               lambda event, e=self.list_e[count_list_e], k=1: self.focus(event, e))
+                                               lambda event, e=self.list_e[count_list_e], k=1: self.focus(event, e, k))
                 self.list_e[count_list_e].grid(row=j + 3, column=i + d, sticky='ew')
                 tk.Label(self.f5, text=f"{70 + count_list_e}%", width=11).grid(column=i + c, row=3 + j,)
                 count_list_e += 1
@@ -156,6 +155,11 @@ class interface:
             self.H = self.e_H.get()
         except ValueError:
             messagebox.showerror("Ошибка", "Введите численное значение")
+
+    def rr(self):
+        for a in self.list_e:
+            if str(a.get()).replace(" ", ""):
+                self.data.append(int(a.get()))
 
 
 obj_interface = interface()
