@@ -1,18 +1,16 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import test1
 
 class Approximation:
 
-    def __init__(self, N, ny, dN, flag):
+    def __init__(self, N, ny, dN):
         self.N = N
         self.ny = ny
         self.dN = dN
-        self.flag = flag
+
 
     def approximation(self):
-        assert self.flag == 1 or self.flag == 2, "Ошибка с флагом кнопки"
         new_N = np.arange(min(self.N), max(self.N))
         model_N_ny = np.polyfit(self.N, self.ny, 3)
         model_N_dN = np.polyfit(self.N, self.dN, 4)
@@ -23,7 +21,7 @@ class Approximation:
         return new_N, func1, func2
 
 
-    def mapping_aproks(self, flag):
+    def mapping_aproks(self):
             new_N, func1, func2 = self.approximation()
             fig, ax = plt.subplots()
             ax.plot(self.N, self.ny, 'o', new_N, func1, '-', label='fit')
@@ -43,11 +41,10 @@ class Approximation:
 
 class InitProg:
 
-    def __init__(self):
-        data, flag = TestTk.data_re
+    def __init__(self, data):
+        print(data)
         self.ny = data["ny"]
         self.N = data["N"]
-        self.flag = flag
 
 
     def get_dN(self):
@@ -56,16 +53,4 @@ class InitProg:
         for i in range (0, 5):
             dN [i] = dN[5] + (dN[5] / 2 - dN[i])
 
-        return dN, self.ny, self.N, self.flag
-
-
-def main():
-    ag_init = InitProg()
-    dN, ny, N, flag = ag_init.get_dN()
-    ag_aprox = Approximation(N, ny, dN, flag)
-    ag_aprox.mapping_aproks(flag)
-    TestTk.writer_d(ny, N, dN)
-
-
-if __name__ == '__main__':
-    main()
+        return dN, self.ny, self.N

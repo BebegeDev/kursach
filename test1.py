@@ -2,11 +2,13 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from PIL import Image
 from PIL import ImageTk
-
+from Haracteristiki import InitProg, Approximation
+import pandas as pd
 class interface:
 
-    def __init__(self):
-        self.data = []
+    def __init__(self, root):
+        self.root = root
+        self.index = []
         self.e = None
         self.index_e = None
         self.H = None
@@ -15,7 +17,6 @@ class interface:
         self.s = None
         self.a = None
         option_list = ["Агрегат №8"]
-        self.root = tk.Tk()
 
         # Первый FRAME
         self.f1 = tk.Frame(self.root)
@@ -65,11 +66,11 @@ class interface:
         b2 = tk.Button(self.f5, text="Рассчитать", command=self.rr)
         b2.grid(column=0, row=17, sticky='ew', columnspan=4)
 
-        self.canvas = tk.Canvas(self.f2, height=490, width=1100)
-        self.canvas.grid(column=1, row=0)
+        self.canvas2 = tk.Canvas(self.f2, height=490, width=1100)
+        self.canvas2.grid(column=1, row=0)
 
-        self.canvas = tk.Canvas(self.f4, height=450, width=1920)
-        self.canvas.grid(column=0, row=0)
+        self.canvas4 = tk.Canvas(self.f4, height=450, width=1920)
+        self.canvas4.grid(column=0, row=0)
 
         self.comboExample = ttk.Combobox(self.f1, values=option_list)
         self.comboExample.grid(column=1, row=0, sticky='w')
@@ -85,22 +86,16 @@ class interface:
         self.table2.heading("ny", text="КПД, %")
         self.table2.grid(column=0, row=1, sticky='ew')
         self.table_entry()
-        self.root.mainloop()
 
-    def focus(self, event, e, k):
-
-            print(e)
-            print(e.focus_get)
-            e = str(e)[-2:]
-            if e == "ry":
-                e = 0
-            else:
-                e = [i for i in e if i.isdigit()]
-                if len(e) == 1:
-                    e = int(e[0]) - k
-                else:
-                    e = int(e[0] + e[1]) - k
-            self.e = e
+    def focus(self, event, e):
+        e = str(e)[-2:]
+        if e == "ry":
+            e = 0
+        else:
+            e = [i for i in e if i.isdigit()]
+            e = int(e[0]) - 1
+        self.e = e
+        return self.e
 
     def select_image(self):
         try:
@@ -126,6 +121,10 @@ class interface:
 
     def callback(self, event):
         if self.selection == "Агрегат №8":
+            python_green = "#476042"
+            x1, y1 = (event.x - 1), (event.y - 1)
+            x2, y2 = (event.x + 1), (event.y + 1)
+            self.canvas2.create_oval(x1, y1, x2, y2, fill=python_green)
             self.num = str(event.x * 118)
             try:
                 self.list_e[self.e].delete(0, 'end')
@@ -142,7 +141,7 @@ class interface:
             for j in range(11 - i):
                 self.list_e.append(tk.Entry(self.f5, width=10, fg='blue', font=('Arial', 16, 'bold')))
                 self.list_e[count_list_e].bind("<Button-1>",
-                                               lambda event, e=self.list_e[count_list_e], k=1: self.focus(event, e, k))
+                                               lambda event, e=self.list_e[count_list_e]: self.focus(event, e))
                 self.list_e[count_list_e].grid(row=j + 3, column=i + d, sticky='ew')
                 tk.Label(self.f5, text=f"{70 + count_list_e}%", width=11).grid(column=i + c, row=3 + j,)
                 count_list_e += 1
@@ -157,9 +156,29 @@ class interface:
             messagebox.showerror("Ошибка", "Введите численное значение")
 
     def rr(self):
+        data_ny = []
+        data_N = []
         for a in self.list_e:
             if str(a.get()).replace(" ", ""):
-                self.data.append(int(a.get()))
+                index_ny = self.focus(None, a)
+                if index_ny == 0:
+                    data_ny.append(70,)
+                    data_N.append(int(a.get()))
+                else:
+                    data_ny.append(70 + index_ny)
+                    data_N.append(int(a.get()))
+        data = {'ny': data_ny, 'N': data_N}
+        data = pd.DataFrame(data)
+        print(data)
+        ag_init = InitProg(data)
+        dN, ny, N = ag_init.get_dN()
+        ag_aprox = Approximation(N, ny, dN)
+        ag_aprox.mapping_aproks()
 
+def main():
+    root = tk.Tk()
+    obj_interface = interface(root)
+    root.mainloop()
 
-obj_interface = interface()
+if __name__ == '__main__':
+    main()
