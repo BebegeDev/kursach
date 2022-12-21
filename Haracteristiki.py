@@ -22,27 +22,27 @@ class Approximation:
 
 
     def mapping_aproks(self):
-            new_N, func1, func2 = self.approximation()
-            fig, ax = plt.subplots()
-            ax.plot(self.N, self.ny, 'o', new_N, func1, '-', label='fit')
-            plt.xlabel("N, кВт")
-            plt.ylabel('ny, %')
-            plt.grid()
-            plt.legend()
-            plt.show()
-            fig, ax = plt.subplots()
-            ax.plot(self.N, self.dN, 'o', new_N, func2, '-', label='fit')
-            plt.xlabel("N, кВт")
-            plt.ylabel('dN, кВт')
-            plt.grid()
-            plt.legend()
-            plt.show()
+        new_N, func1, func2 = self.approximation()
+        fig, ax = plt.subplots()
+        ax.plot(self.N, self.ny, 'o', new_N, func1, '-', label='fit')
+        plt.xlabel("N, кВт")
+        plt.ylabel('ny, %')
+        plt.grid()
+        plt.legend()
+        plt.show()
+        fig, ax = plt.subplots()
+        ax.plot(self.N, self.dN, 'o', new_N, func2, '-', label='fit')
+        plt.xlabel("N, кВт")
+        plt.ylabel('dN, кВт')
+        plt.grid()
+        plt.legend()
+        plt.show()
+
 
 
 class InitProg:
 
     def __init__(self, data):
-        print(data)
         self.ny = data["ny"]
         self.N = data["N"]
 

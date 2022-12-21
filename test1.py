@@ -80,11 +80,12 @@ class interface:
         b3.grid(column=4, row=1, sticky='ew')
 
         # Table 2
-        columns1 = ['N', 'ny']
+        columns1 = ['ny', 'N']
         self.table2 = ttk.Treeview(self.f3, columns=columns1, show='headings', height=28)
-        self.table2.heading("N", text="Мощность, МВт")
         self.table2.heading("ny", text="КПД, %")
+        self.table2.heading("N", text="Мощность, МВт")
         self.table2.grid(column=0, row=1, sticky='ew')
+
         self.table_entry()
 
     def focus(self, event, e):
@@ -153,6 +154,12 @@ class interface:
             c = 1
             d = 2
 
+    def table_end(self, N, ny):
+        # print(ny, N)
+        self.table2.delete(*self.table2.get_children())
+        for i in range(len(N)):
+            self.table2.insert('', tk.END, values=(ny.iloc[i], N.iloc[i]))
+
     def create_list_e(self, count_list_e, i, j, c, d, *args):
         self.list_e.append(tk.Entry(self.f5, width=10, fg='blue', font=('Arial', 16, 'bold')))
         self.list_e[count_list_e].bind("<Button-1>",
@@ -170,22 +177,33 @@ class interface:
     def rr(self):
         data_ny = []
         data_N = []
+        c = 1
         for a in self.list_e:
             if str(a.get()).replace(" ", ""):
                 index_ny = self.focus(None, a)
                 if index_ny == 0:
                     data_ny.append(70,)
                     data_N.append(int(a.get()))
-                else:
+                elif index_ny <= 20:
                     data_ny.append(70 + index_ny)
                     data_N.append(int(a.get()))
+                else:
+                    data_ny.append(110 - index_ny)
+                    data_N.append(int(a.get()))
+                    c += 1
+
+
         data = {'ny': data_ny, 'N': data_N}
         data = pd.DataFrame(data)
-        print(data)
         ag_init = InitProg(data)
         dN, ny, N = ag_init.get_dN()
-        ag_aprox = Approximation(N, ny, dN)
-        ag_aprox.mapping_aproks()
+        if len(data['N']) > 9:
+            ag_aprox = Approximation(N, ny, dN)
+            self.table_end(ag_aprox[0], ny)
+            ag_aprox.mapping_aproks()
+        else:
+            messagebox.showerror('Ошибка', "Пожалуйста укажите больше 10 значений")
+
 
 def main():
     root = tk.Tk()
