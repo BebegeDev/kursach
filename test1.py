@@ -23,11 +23,11 @@ class interface:
         self.f1.grid(row=0, column=0)
 
         # Второй FRAME
-        self.f2 = tk.Frame(self.root, bg='red')
+        self.f2 = tk.Frame(self.root,)
         self.f2.grid(row=0, column=1, rowspan=2)
 
         # Третий FRAME
-        self.f3 = tk.Frame(self.root, bg='blue')
+        self.f3 = tk.Frame(self.root,)
         self.f3.grid(row=0, column=2, rowspan=2)
 
         # Четвертый FRAME
@@ -37,6 +37,10 @@ class interface:
         # Пятый FRAME
         self.f5 = tk.Frame(self.root)
         self.f5.grid(row=1, sticky='ew',)
+
+        # 6 FRAME
+        self.f6 = tk.Frame(self.root)
+        self.f6.grid(row=0, column=3, sticky='ew',)
 
         # Entry
         self.e_H = tk.Entry(self.f1)
@@ -66,7 +70,7 @@ class interface:
         b2 = tk.Button(self.f5, text="Рассчитать", command=self.rr)
         b2.grid(column=0, row=19, sticky='ew', columnspan=4)
 
-        self.canvas2 = tk.Canvas(self.f2, height=610, width=1100, bg='green')
+        self.canvas2 = tk.Canvas(self.f2, height=610, width=1050,)
         self.canvas2.grid(column=1, row=0)
 
         # self.canvas4 = tk.Canvas(self.f4, height=450, width=1500, bg='red')
@@ -86,6 +90,9 @@ class interface:
         self.table2.heading("N", text="Мощность, МВт")
         self.table2.grid(column=0, row=1, sticky='ew')
 
+        treeScroll = ttk.Scrollbar(self.root, orient="vertical", command=self.table2.yview)
+        treeScroll.place(x=1890, y=50, height=560)
+        self.table2.configure(yscrollcommand=treeScroll.set)
         self.table_entry()
 
     def focus(self, event, e):
@@ -106,7 +113,7 @@ class interface:
             self.selection = self.comboExample.get()
             path_Ag = {"Агрегат №8": "Graf/Ag8.png"}
             image = Image.open(path_Ag[self.selection])
-            resize_image = image.resize((1100, 610))
+            resize_image = image.resize((1050, 610))
             image = ImageTk.PhotoImage(resize_image)
 
             if self.panelA is None:
@@ -125,10 +132,6 @@ class interface:
 
     def callback(self, event):
         if self.selection == "Агрегат №8":
-            # python_green = "#476042"
-            # x1, y1 = (event.x - 1), (event.y - 1)
-            # x2, y2 = (event.x + 1), (event.y + 1)
-            # self.canvas2.create_oval(x1, y1, x2, y2, fill=python_green)
             self.num = str(event.x * 118)
             try:
                 self.list_e[self.e].delete(0, 'end')
@@ -155,7 +158,6 @@ class interface:
             d = 2
 
     def table_end(self, N, ny):
-        # print(ny, N)
         self.table2.delete(*self.table2.get_children())
         for i in range(len(N)):
             self.table2.insert('', tk.END, values=(ny.iloc[i], N.iloc[i]))
@@ -197,9 +199,12 @@ class interface:
         data = pd.DataFrame(data)
         ag_init = InitProg(data)
         dN, ny, N = ag_init.get_dN()
-        if len(data['N']) > 9:
+        if len(data['N']) > 5:
             ag_aprox = Approximation(N, ny, dN)
-            self.table_end(ag_aprox[0], ny)
+            N, ny, _ = ag_aprox.approximation()
+            N = pd.Series(N)
+            ny = pd.Series(ny)
+            self.table_end(N, ny)
             ag_aprox.mapping_aproks()
         else:
             messagebox.showerror('Ошибка', "Пожалуйста укажите больше 10 значений")
@@ -207,6 +212,7 @@ class interface:
 
 def main():
     root = tk.Tk()
+    root.geometry('1920x1080')
     obj_interface = interface(root)
     root.mainloop()
 

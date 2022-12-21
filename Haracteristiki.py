@@ -11,14 +11,14 @@ class Approximation:
 
 
     def approximation(self):
-        new_N = np.arange(min(self.N), max(self.N))
+        self.new_N = np.arange(min(self.N), max(self.N))
         model_N_ny = np.polyfit(self.N, self.ny, 3)
         model_N_dN = np.polyfit(self.N, self.dN, 4)
         predict_N_ny = np.poly1d(model_N_ny)
         predict_N_dN = np.poly1d(model_N_dN)
-        func1 = predict_N_ny(new_N)
-        func2 = predict_N_dN(new_N)
-        return new_N, func1, func2
+        func1 = predict_N_ny(self.new_N)
+        func2 = predict_N_dN(self.new_N)
+        return self.new_N, func1, func2
 
 
     def mapping_aproks(self):
@@ -38,6 +38,8 @@ class Approximation:
         plt.legend()
         plt.show()
 
+    def return_N(self):
+        return self.N
 
 
 class InitProg:
