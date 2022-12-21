@@ -50,7 +50,7 @@ class InitProg:
     def get_dN(self):
         dN = pd.Series(map(lambda N, ny: N * (100 - ny) / ny, self.N, self.ny))
 
-        for i in range (0, 5):
-            dN [i] = dN[5] + (dN[5] / 2 - dN[i])
+        # for i in range (0, 5):
+        #     dN [i] = dN[5] + (dN[5] / 2 - dN[i])
 
         return dN, self.ny, self.N

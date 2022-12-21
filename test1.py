@@ -19,20 +19,20 @@ class interface:
         option_list = ["Агрегат №8"]
 
         # Первый FRAME
-        self.f1 = tk.Frame(self.root)
+        self.f1 = tk.Frame(self.root,)
         self.f1.grid(row=0, column=0)
 
         # Второй FRAME
-        self.f2 = tk.Frame(self.root)
+        self.f2 = tk.Frame(self.root, bg='red')
         self.f2.grid(row=0, column=1, rowspan=2)
 
         # Третий FRAME
-        self.f3 = tk.Frame(self.root)
+        self.f3 = tk.Frame(self.root, bg='blue')
         self.f3.grid(row=0, column=2, rowspan=2)
 
         # Четвертый FRAME
-        self.f4 = tk.Frame(self.root)
-        self.f4.grid(row=2, columnspan=3, sticky='ew')
+        # self.f4 = tk.Frame(self.root, bg='yellow')
+        # self.f4.grid(row=1, column=1, sticky='ew', columnspan=2, rowspan=2)
 
         # Пятый FRAME
         self.f5 = tk.Frame(self.root)
@@ -44,11 +44,11 @@ class interface:
 
         # Label 1 АГРЕГАТ
         self.l1 = tk.Label(self.f1, text="Выберите агрегат")
-        self.l1.grid(column=0, row=0, sticky='w')
+        self.l1.grid(column=0, row=0, sticky='ew')
 
         # Label 2 НАПОР
         self.l2 = tk.Label(self.f1, text="Введите напор H, м")
-        self.l2.grid(column=0, row=1, sticky='w')
+        self.l2.grid(column=0, row=1, sticky='ew')
 
         # Label 3
         self.l3 = tk.Label(self.f5, text="Укажите значения мощности соот-му КПД")
@@ -64,24 +64,24 @@ class interface:
 
         # Button РАСЧЕТ
         b2 = tk.Button(self.f5, text="Рассчитать", command=self.rr)
-        b2.grid(column=0, row=17, sticky='ew', columnspan=4)
+        b2.grid(column=0, row=19, sticky='ew', columnspan=4)
 
-        self.canvas2 = tk.Canvas(self.f2, height=490, width=1100)
+        self.canvas2 = tk.Canvas(self.f2, height=610, width=1100, bg='green')
         self.canvas2.grid(column=1, row=0)
 
-        self.canvas4 = tk.Canvas(self.f4, height=450, width=1920)
-        self.canvas4.grid(column=0, row=0)
+        # self.canvas4 = tk.Canvas(self.f4, height=450, width=1500, bg='red')
+        # self.canvas4.grid(column=0, row=0)
 
         self.comboExample = ttk.Combobox(self.f1, values=option_list)
         self.comboExample.grid(column=1, row=0, sticky='w')
 
         # Button НАПОР
         b3 = tk.Button(self.f1, text="Задать напор", command=self.pressure)
-        b3.grid(column=4, row=1, sticky='w')
+        b3.grid(column=4, row=1, sticky='ew')
 
         # Table 2
         columns1 = ['N', 'ny']
-        self.table2 = ttk.Treeview(self.f3, columns=columns1, show='headings', height=24)
+        self.table2 = ttk.Treeview(self.f3, columns=columns1, show='headings', height=28)
         self.table2.heading("N", text="Мощность, МВт")
         self.table2.heading("ny", text="КПД, %")
         self.table2.grid(column=0, row=1, sticky='ew')
@@ -93,7 +93,10 @@ class interface:
             e = 0
         else:
             e = [i for i in e if i.isdigit()]
-            e = int(e[0]) - 1
+            if len(e) == 2:
+                e = int(e[0] + e[1]) - 1
+            else:
+                e = int(e[0]) - 1
         self.e = e
         return self.e
 
@@ -102,7 +105,7 @@ class interface:
             self.selection = self.comboExample.get()
             path_Ag = {"Агрегат №8": "Graf/Ag8.png"}
             image = Image.open(path_Ag[self.selection])
-            resize_image = image.resize((1100, 519))
+            resize_image = image.resize((1100, 610))
             image = ImageTk.PhotoImage(resize_image)
 
             if self.panelA is None:
@@ -121,10 +124,10 @@ class interface:
 
     def callback(self, event):
         if self.selection == "Агрегат №8":
-            python_green = "#476042"
-            x1, y1 = (event.x - 1), (event.y - 1)
-            x2, y2 = (event.x + 1), (event.y + 1)
-            self.canvas2.create_oval(x1, y1, x2, y2, fill=python_green)
+            # python_green = "#476042"
+            # x1, y1 = (event.x - 1), (event.y - 1)
+            # x2, y2 = (event.x + 1), (event.y + 1)
+            # self.canvas2.create_oval(x1, y1, x2, y2, fill=python_green)
             self.num = str(event.x * 118)
             try:
                 self.list_e[self.e].delete(0, 'end')
@@ -137,16 +140,25 @@ class interface:
         count_list_e = 0
         c = 0
         d = 1
+        k = 2
         for i in range(2):
-            for j in range(11 - i):
-                self.list_e.append(tk.Entry(self.f5, width=10, fg='blue', font=('Arial', 16, 'bold')))
-                self.list_e[count_list_e].bind("<Button-1>",
-                                               lambda event, e=self.list_e[count_list_e]: self.focus(event, e))
-                self.list_e[count_list_e].grid(row=j + 3, column=i + d, sticky='ew')
-                tk.Label(self.f5, text=f"{70 + count_list_e}%", width=11).grid(column=i + c, row=3 + j,)
-                count_list_e += 1
+            for j in range(16):
+                if count_list_e + 70 <= 90:
+                    self.create_list_e(count_list_e, i, j, c, d, 0)
+                    count_list_e += 1
+                else:
+                    self.create_list_e(count_list_e, i, j, c, d, k)
+                    k += 2
+                    count_list_e += 1
             c = 1
             d = 2
+
+    def create_list_e(self, count_list_e, i, j, c, d, *args):
+        self.list_e.append(tk.Entry(self.f5, width=10, fg='blue', font=('Arial', 16, 'bold')))
+        self.list_e[count_list_e].bind("<Button-1>",
+                                       lambda event, e=self.list_e[count_list_e]: self.focus(event, e))
+        self.list_e[count_list_e].grid(row=j + 3, column=i + d, sticky='ew')
+        tk.Label(self.f5, text=f"{70 + count_list_e - args[0]}%", width=11).grid(column=i + c, row=3 + j, )
 
     def pressure(self):
         try:
