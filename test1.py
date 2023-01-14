@@ -16,7 +16,7 @@ class interface:
         self.path = None
         self.s = None
         self.a = None
-        option_list = ["Агрегат №8"]
+        option_list = ["Агрегат №7", "Агрегат №8", "Агрегат №9", "Агрегат №10"]
 
         # Первый FRAME
         self.f1 = tk.Frame(self.root,)
@@ -111,7 +111,8 @@ class interface:
     def select_image(self):
         try:
             self.selection = self.comboExample.get()
-            path_Ag = {"Агрегат №8": "Graf/Ag8.png"}
+            path_Ag = {"Агрегат №7": "Graf/Ag7.png", "Агрегат №8": "Graf/Ag8.png", "Агрегат №9": "Graf/Ag9.png",
+                       "Агрегат №10": "Graf/Ag10.png"}
             image = Image.open(path_Ag[self.selection])
             resize_image = image.resize((1050, 610))
             image = ImageTk.PhotoImage(resize_image)
@@ -132,12 +133,23 @@ class interface:
 
     def callback(self, event):
         if self.selection == "Агрегат №8":
-            self.num = str(event.x * 118)
-            try:
-                self.list_e[self.e].delete(0, 'end')
-                self.list_e[self.e].insert(0, self.num)
-            except TypeError:
-                pass
+            s = (event.x - 64) * 86 + 10000
+            self.num = str(s + ((s // 10000) * 3400))
+        elif self.selection == "Агрегат №7":
+            s = (event.x - 71) * 94.57 + 20000
+            self.num = str(s + ((s // 10000) * 1000))
+        elif self.selection == "Агрегат №9":
+            s = (event.x - 72) * 85.5 + 10000
+            self.num = str(s + ((s // 10000) * 3400))
+        elif self.selection == "Агрегат №10":
+            s = (event.x - 72) * 95 + 20000
+            self.num = str(s + ((s // 10000) * 800))
+        try:
+
+            self.list_e[self.e].delete(0, 'end')
+            self.list_e[self.e].insert(0, self.num)
+        except TypeError:
+            pass
 
     def table_entry(self):
         self.list_e = []
@@ -215,6 +227,7 @@ def main():
     root.geometry('1920x1080')
     obj_interface = interface(root)
     root.mainloop()
+
 
 if __name__ == '__main__':
     main()
