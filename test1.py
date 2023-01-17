@@ -227,6 +227,7 @@ class interface:
             ny = pd.Series(ny)
             self.table_end(N, ny)
             self.ag_aprox.mapping_aproks()
+            self.ag_aprox.new_image()
             self.image_canvas7()
         else:
             messagebox.showerror('Ошибка', "Пожалуйста укажите больше 10 значений")
