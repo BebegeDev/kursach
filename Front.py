@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from PIL import Image
 from PIL import ImageTk
-from Haracteristiki import InitProg, Approximation
+from back import InitProg, Approximation
 import pandas as pd
 class interface:
 
