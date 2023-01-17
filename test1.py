@@ -56,7 +56,7 @@ class interface:
         self.l1.grid(column=0, row=0, sticky='ew')
 
         # Label 2 НАПОР
-        self.l2 = tk.Label(self.f1, text="Введите напор H, м")
+        self.l2 = tk.Label(self.f1, text="Введите степень полинома")
         self.l2.grid(column=0, row=1, sticky='ew')
 
         # Label 3
@@ -72,7 +72,7 @@ class interface:
         b1.grid(column=4, row=0, sticky='ew')
 
         # Button РАСЧЕТ
-        b2 = tk.Button(self.f5, text="Рассчитать", command=self.rr)
+        b2 = tk.Button(self.f5, text="Рассчитать", command=lambda: [self.rr()])
         b2.grid(column=0, row=19, sticky='ew', columnspan=4)
 
         self.canvas2 = tk.Canvas(self.f2, height=610, width=1050,)
@@ -85,7 +85,7 @@ class interface:
         self.comboExample.grid(column=1, row=0, sticky='w')
 
         # Button НАПОР
-        b3 = tk.Button(self.f1, text="Задать напор", command=self.pressure)
+        b3 = tk.Button(self.f1, text="Задать", command=self.pressure)
         b3.grid(column=4, row=1, sticky='ew')
 
         # Table 2
@@ -193,8 +193,8 @@ class interface:
 
     def pressure(self):
         try:
-            int(self.e_H.get())
-            self.H = self.e_H.get()
+            self.H = int(self.e_H.get())
+            print(type(self.H))
         except ValueError:
             messagebox.showerror("Ошибка", "Введите численное значение")
 
@@ -221,7 +221,7 @@ class interface:
         ag_init = InitProg(data)
         dN, ny, N = ag_init.get_dN()
         if len(data['N']) > 5:
-            self.ag_aprox = Approximation(N, ny, dN)
+            self.ag_aprox = Approximation(N, ny, dN, self.H)
             N, ny, _ = self.ag_aprox.approximation()
             N = pd.Series(N)
             ny = pd.Series(ny)

@@ -5,16 +5,17 @@ from PIL import Image
 
 class Approximation:
 
-    def __init__(self, N, ny, dN):
+    def __init__(self, N, ny, dN, k):
         self.N = N
         self.ny = ny
         self.dN = dN
+        self.k = k
 
 
     def approximation(self):
         self.new_N = np.arange(min(self.N), max(self.N))
-        model_N_ny = np.polyfit(self.N, self.ny, 3)
-        model_N_dN = np.polyfit(self.N, self.dN, 4)
+        model_N_ny = np.polyfit(self.N, self.ny, self.k)
+        model_N_dN = np.polyfit(self.N, self.dN, self.k)
         predict_N_ny = np.poly1d(model_N_ny)
         predict_N_dN = np.poly1d(model_N_dN)
         func1 = predict_N_ny(self.new_N)
