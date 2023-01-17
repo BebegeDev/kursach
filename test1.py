@@ -7,6 +7,7 @@ import pandas as pd
 class interface:
 
     def __init__(self, root):
+        self.panelA1 = None
         self.root = root
         self.index = []
         self.e = None
@@ -31,8 +32,8 @@ class interface:
         self.f3.grid(row=0, column=2, rowspan=2)
 
         # Четвертый FRAME
-        # self.f4 = tk.Frame(self.root, bg='yellow')
-        # self.f4.grid(row=1, column=1, sticky='ew', columnspan=2, rowspan=2)
+        self.f4 = tk.Frame(self.root, bg="green")
+        self.f4.grid(row=2, column=0,)
 
         # Пятый FRAME
         self.f5 = tk.Frame(self.root)
@@ -41,6 +42,10 @@ class interface:
         # 6 FRAME
         self.f6 = tk.Frame(self.root)
         self.f6.grid(row=0, column=3, sticky='ew',)
+
+        # 7 FRAME
+        self.f7 = tk.Frame(self.root, bg='green')
+        self.f7.grid(row=2, column=1, sticky='ew',)
 
         # Entry
         self.e_H = tk.Entry(self.f1)
@@ -73,8 +78,8 @@ class interface:
         self.canvas2 = tk.Canvas(self.f2, height=610, width=1050,)
         self.canvas2.grid(column=1, row=0)
 
-        # self.canvas4 = tk.Canvas(self.f4, height=450, width=1500, bg='red')
-        # self.canvas4.grid(column=0, row=0)
+        self.canvas4 = tk.Canvas(self.f4, height=370, width=412)
+        self.canvas4.grid(column=0, row=0, sticky='ew')
 
         self.comboExample = ttk.Combobox(self.f1, values=option_list)
         self.comboExample.grid(column=1, row=0, sticky='w')
@@ -135,17 +140,22 @@ class interface:
         if self.selection == "Агрегат №8":
             s = (event.x - 64) * 86 + 10000
             self.num = str(s + ((s // 10000) * 3400))
+            self.callback_dop()
         elif self.selection == "Агрегат №7":
-            s = (event.x - 71) * 94.57 + 20000
+            s = (event.x - 71) * 95 + 20000
             self.num = str(s + ((s // 10000) * 1000))
+            self.callback_dop()
         elif self.selection == "Агрегат №9":
-            s = (event.x - 72) * 85.5 + 10000
+            s = (event.x - 72) * 86 + 10000
             self.num = str(s + ((s // 10000) * 3400))
+            self.callback_dop()
         elif self.selection == "Агрегат №10":
             s = (event.x - 72) * 95 + 20000
             self.num = str(s + ((s // 10000) * 800))
-        try:
+            self.callback_dop()
 
+    def callback_dop(self):
+        try:
             self.list_e[self.e].delete(0, 'end')
             self.list_e[self.e].insert(0, self.num)
         except TypeError:
@@ -206,20 +216,35 @@ class interface:
                     data_N.append(int(a.get()))
                     c += 1
 
-
         data = {'ny': data_ny, 'N': data_N}
         data = pd.DataFrame(data)
         ag_init = InitProg(data)
         dN, ny, N = ag_init.get_dN()
         if len(data['N']) > 5:
-            ag_aprox = Approximation(N, ny, dN)
-            N, ny, _ = ag_aprox.approximation()
+            self.ag_aprox = Approximation(N, ny, dN)
+            N, ny, _ = self.ag_aprox.approximation()
             N = pd.Series(N)
             ny = pd.Series(ny)
             self.table_end(N, ny)
-            ag_aprox.mapping_aproks()
+            self.ag_aprox.mapping_aproks()
+            self.image_canvas7()
         else:
             messagebox.showerror('Ошибка', "Пожалуйста укажите больше 10 значений")
+
+    def image_canvas7(self):
+        image = Image.open('Chart_3.png')
+        resize_image = image.resize((1050, 360))
+        image = ImageTk.PhotoImage(resize_image)
+        if self.panelA1 is None:
+            self.panelA1 = tk.Label(self.f7, image=image)
+            self.panelA1.bind("<Button-1>", self.callback)
+            self.panelA1.image = image
+            self.panelA1.grid(column=0, row=0)
+
+        else:
+            self.panelA1.configure(image=image)
+            self.panelA1.image = image
+            self.panelA1.bind("<Button-1>", self.callback)
 
 
 def main():
